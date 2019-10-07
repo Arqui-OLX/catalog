@@ -81,7 +81,7 @@ var productSchema = new Schema({
             neveras:{
                 tipo: String,
                 precio:{
-                    valorPrecio: String,
+                    valorPrecio: Number,
                     tipoPago: String
                 }
             }
@@ -93,8 +93,8 @@ var productSchema = new Schema({
                 nombreCompania: String,
                 experienciaMin:Number,
                 experienciaMax:Number,
-                salarioMin:String,
-                salarioMax:String,
+                salarioMin:Number,
+                salarioMax:Number,
             }
         },
         servicios:{
