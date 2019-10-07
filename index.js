@@ -7,12 +7,11 @@ var Product = require("./model/product");
 app.use(express.json()) // for parsing application/json
 
 
-
 app.get('/product', function(req, res){
-    console.log('getting all books');
+ 
     Product.find({}).exec(function(err, data){
         if(err) {
-            res.send('error has occured');
+            res.send('Error al obtener la lista de productos');
         } else {
             console.log(data);
             res.json(data);
@@ -26,6 +25,7 @@ app.post('/product', function (req, res) {
     var product = new Product(req.body)
     product.save(function(err, data) {
         if (err){
+            res.send('Error al crear un nuevo producto');
             return console.error(err);
         }else{
             console.log(data);
@@ -37,23 +37,14 @@ app.post('/product', function (req, res) {
 
 
 app.put('/:id', function(req, res){
-    Product.findOneAndUpdate({
-        _id: req.params.id
-    },{
-        $set: {
-            name: req.body.name,
-            price: req.body.price,
-         }
-    },{
-        upsert: true
-    },function(err, data){
-        if(err) {
-            res.send('error updating book');
-        } else {
-            console.log(data);
-            res.send(data);
-        }
-    });
+    let productId =req.params.id;
+    let update = req.body;
+
+    Product.findByIdAndUpdate(productId, update,(err, productUpdate)=>{
+        if(err) res.send('Error al actualizar el producto');
+        res.status(200).send({product: productUpdate});
+    })
+
 });
 
 
@@ -63,7 +54,7 @@ app.delete('/:id', function(req, res){
         _id: req.params.id
     },function(err, data){
         if(err) {
-            res.send('error deleting book');
+            res.send('Error al eliminar un producto');
         } else {
             console.log(data);
             res.send(data);
@@ -73,5 +64,5 @@ app.delete('/:id', function(req, res){
 
 
 app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+  console.log('Servidor conectado en el puerto 3000!');
 });
