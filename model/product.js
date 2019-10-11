@@ -16,14 +16,14 @@ var productSchema = new Schema({
         vehiculos:{
             carros:{
                 marca: String,
-                anio: String,
+                anio: Number,
                 kilometraje: Number,
                 combustible: String,
                 color: String,
-                Transmision: String,
+                transmision: String,
                 placa: String,
                 precio:{
-                    valorPrecio:String,
+                    valorPrecio:Number,
                     tipoPago: String
                 }
             },
@@ -33,39 +33,44 @@ var productSchema = new Schema({
                 kilometraje: Number,
                 color: String,
                 cilindrada: String,
-                tipoVendedor: String
+                tipoVendedor: String,
+                precio:{
+                    valorPrecio:Number,
+                    tipoPago: String
+                }
             }
         },
         telefonosTablets:{
             telefonos:{
                 marca: String,
                 precio:{
-                    valorPrecio: String,
+                    valorPrecio: Number,
                     tipoPago: String
                 }
             },
             tablets:{
                 marca: String,
                 precio:{
-                    valorPrecio: String,
+                    valorPrecio: Number,
                     tipoPago: String
                 }
 
             }
         },
         computadores:{
-            compatorEscritorio:{
+            computadorEscritorio:{
                 precio:{
-                    valorPrecio: String,
+                    valorPrecio: Number,
                     tipoPago: String
                 }
             },
             portatiles:{
+
+                marca:String,
                 precio:{
-                    valorPrecio: String,
+                    valorPrecio: Number,
                     tipoPago: String
-                },
-                marca:String
+                }
             }
 
 
@@ -79,7 +84,6 @@ var productSchema = new Schema({
                 }
             },
             neveras:{
-                tipo: String,
                 precio:{
                     valorPrecio: Number,
                     tipoPago: String
@@ -87,7 +91,7 @@ var productSchema = new Schema({
             }
         },
         empleos:{
-            BuscarTrabajo:{
+            buscarTrabajo:{
                 tipo: String,
                 enEsteAnuncio: String,
                 nombreCompania: String,
@@ -114,6 +118,8 @@ var productSchema = new Schema({
 })
 
 var modelProduct = mongoose.model('product', productSchema)
+
+
 
  
 module.exports = modelProduct;
