@@ -1,9 +1,8 @@
-
 var mongoose = require('mongoose');
 
 
 //creación y conexion de la base de datos
-mongoose.connect('mongodb://localhost/catalogoDB')
+mongoose.connect('mongodb://catalog-db/catalog-database')
 .then(db => console.log('db connected'))
   .catch(err => console.log(err));
  
@@ -13,6 +12,7 @@ var Schema = mongoose.Schema;
 var productSchema = new Schema({
 
     catalog:{
+
         vehiculos:{
             carros:{
                 marca: String,

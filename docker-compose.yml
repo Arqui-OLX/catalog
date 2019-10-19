@@ -1,0 +1,18 @@
+version: "2"
+services:
+  catalog-ms:
+    build: .
+    ports:
+      - "3002:3002"
+    links:
+      - catalog-db
+  catalog-db:
+    image: mongo
+    volumes:
+      - /data/mongodb/db:/data/db
+    ports:
+      - "3303:3303"
+
+
+
+
