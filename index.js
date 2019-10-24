@@ -62,6 +62,6 @@ app.delete('/:id', function(req, res){
 });
 
 
-app.listen(4000, function () {
-  console.log('Servidor conectado en el puerto 3000!');
+app.listen(3002, function () {
+  console.log('Servidor conectado en el puerto 3002!');
 });

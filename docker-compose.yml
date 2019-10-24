@@ -11,7 +11,7 @@ services:
     volumes:
       - /data/mongodb/db:/data/db
     ports:
-      - "3303:3303"
+      - "3303:3307"
 
 
 
