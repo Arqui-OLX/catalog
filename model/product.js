@@ -1,16 +1,8 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
+const Schema = mongoose.Schema;
 
-//creación y conexion de la base de datos
-//mongoose.connect('mongodb://catalog-db/catalog-database')
-mongoose.connect('mongodb://localhost/catalogoDB')
-.then(db => console.log('db connected'))
-  .catch(err => console.log(err));
- 
-
-var Schema = mongoose.Schema;
-
-var productSchema = new Schema({
+const productSchema = new Schema({
 
     catalog:{
         vehiculos:{
@@ -34,6 +26,7 @@ var productSchema = new Schema({
                 color: String,
                 cilindrada: String,
                 tipoVendedor: String,
+                placa: String,
                 precio:{
                     valorPrecio: Number,
                     tipoPago: String
@@ -113,7 +106,7 @@ var productSchema = new Schema({
     }
 })
 
-var modelProduct = mongoose.model('product', productSchema)
+const modelProduct = mongoose.model('product', productSchema)
 
 
 

@@ -1,66 +1,44 @@
-
 // CONTROLADOR
-var express = require('express');
-var app = express();
-var Product = require("./model/product");
+const express = require('express');
+const app = express();
+const mongoose = require('mongoose');
+const parser = require("body-parser");
+const productRoutes = require('./routes/products');
+
+
+//creación y conexion de la base de datos
+//mongoose.connect('mongodb://catalog-db/catalog-database')
+const mongoDB = 'mongodb://localhost/catalogDB';
+
+mongoose.connect(mongoDB, {
+    useCreateIndex: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true 
+ })
+.then(db => console.log('db connected'))
+  .catch(err => console.log(err));
  
-app.use(express.json()) // for parsing application/json
+app.use(parser.urlencoded({extended: false}));
+app.use(parser.json());
 
+app.use(productRoutes);
 
-app.get('/product', function(req, res){
- 
-    Product.find({}).exec(function(err, data){
-        if(err) {
-            res.send('Error al obtener la lista de productos');
-        } else {
-            console.log(data);
-            res.json(data);
+app.use((req, res, next) => {
+
+    const error = new Error('Invalid route');
+    error.status = 404;
+    next(error);
+});
+
+app.use((error, req, res, next) => {
+
+    res.status(error.status || 500);
+    res.json({
+        error: {
+            message: error.message
         }
     });
 });
-
-
-app.post('/product', function (req, res) {
-    
-    var product = new Product(req.body)
-    product.save(function(err, data) {
-        if (err){
-            res.send('Error al crear un nuevo producto');
-            return console.error(err);
-        }else{
-            console.log(data);
-            res.json(data);
-        }
-    });
-     
-})
-
-
-app.put('/:id', function(req, res){
-    let productId =req.params.id;
-    let update = req.body;
-
-    Product.findByIdAndUpdate(productId, update,(err, productUpdate)=>{
-        if(err) res.send('Error al actualizar el producto');
-        res.status(200).send({product: productUpdate});
-    })
-
-});
-
-
-app.delete('/:id', function(req, res){
-    Product.findByIdAndRemove({
-        _id: req.params.id
-    },function(err, data){
-        if(err) {
-            res.send('Error al eliminar un producto');
-        } else {
-            console.log(data);
-            res.send(data);
-        }
-    });
-});
-
 
 app.listen(3002, function () {
   console.log('Servidor conectado en el puerto 3002!');
