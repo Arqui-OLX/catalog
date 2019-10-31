@@ -13,8 +13,10 @@ const productSchema = new Schema({
         description: String,
         price: Number,
         priceType: String,
-        features: Array
- 
+        features: [{
+            featureName: String,
+            featureValue: String
+        }] 
      }
 })
 
