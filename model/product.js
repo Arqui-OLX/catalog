@@ -4,23 +4,25 @@ const Schema = mongoose.Schema;
 
 const productSchema = new Schema({
 
-    post:{
+    category: String,
+    subcategory:String, 
+    created_at : { 
+        type : Date, 
+        default: Date.now
+    },
+    title: { type: String},
+    description: { type: String},
+    price: Number,
+    priceType: String,
+    features: [{
+        featureName: String,
+        featureValue: String
+    }] 
+});
 
-        category: String,
-        subcategory:String, 
-        date:Date,
-        title: String,
-        description: String,
-        price: Number,
-        priceType: String,
-        features: [{
-            featureName: String,
-            featureValue: String
-        }] 
-     }
-})
+productSchema.index({ title: 'text', description: 'text' });
 
-const modelProduct = mongoose.model('product', productSchema)
+const modelProduct = mongoose.model('product', productSchema);
 
 
 

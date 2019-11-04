@@ -40,6 +40,6 @@ app.use((error, req, res, next) => {
     });
 });
 
-app.listen(3002, function () {
-  console.log('Servidor conectado en el puerto 3002!');
+app.listen(3000, function () {
+  console.log('Servidor conectado en el puerto 3000!');
 });
