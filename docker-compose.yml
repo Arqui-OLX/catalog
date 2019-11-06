@@ -12,6 +12,8 @@ services:
       - /data/mongodb/db:/data/db
     ports:
       - "3303:3307"
+    labels:
+      io.rancher.scheduler.affinity:host_label: id=n1
 
 
 

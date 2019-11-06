@@ -3,12 +3,15 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const parser = require("body-parser");
-const productRoutes = require('./routes/products');
+const cors = require('cors');
+const Product = require("./model/product");
+
+
 
 
 //creación y conexion de la base de datos
 //mongoose.connect('mongodb://catalog-db/catalog-database')
-const mongoDB = 'mongodb://localhost/catalogDB';
+const mongoDB = 'mongodb://localhost:27017/catalogDB';
 
 mongoose.connect(mongoDB, {
     useCreateIndex: true,
@@ -17,29 +20,118 @@ mongoose.connect(mongoDB, {
  })
 .then(db => console.log('db connected'))
   .catch(err => console.log(err));
+
+
  
 app.use(parser.urlencoded({extended: false}));
 app.use(parser.json());
+app.use(cors());
 
-app.use(productRoutes);
 
-app.use((req, res, next) => {
 
-    const error = new Error('Invalid route');
-    error.status = 404;
-    next(error);
-});
+app.get('/product/:id',function(req, res){
+    
+    const id = req.params.id;
 
-app.use((error, req, res, next) => {
 
-    res.status(error.status || 500);
-    res.json({
-        error: {
-            message: error.message
+    Product.findById(id).exec(function(err, data){
+        if(err) {
+            res.status(500).send('Error al encontrar post');
+        } else {
+            console.log(data.created_at.toLocaleString());
+            res.json(data);
         }
     });
 });
 
-app.listen(3000, function () {
-  console.log('Servidor conectado en el puerto 3000!');
+
+app.get('/product', function(req, res){
+
+    // GET localhost:3000/product?search=coffee shopping&priceFilter[]=200&priceFilter[]=10000000&subcategory=M
+    //     &featureName=x&featureValue=y
+    
+
+    let query = Product.find({});
+    let features = [];
+
+    if (req.query.search  !== undefined) {
+        query = query.find({ $text: { $search: '\"'+req.query.search+'\"' } });
+    }
+
+    if (req.query.priceFilter !== undefined) {
+        query = query.find({ price: { $gt: parseInt(req.query.priceFilter[0]), $lte: parseInt(req.query.priceFilter[1]) } });
+    }
+
+    if (req.query.subcategory !== undefined) {
+        query = query.find({ subcategory: req.query.subcategory })
+    }
+
+
+    if (req.query.featureName !== undefined  && req.query.featureValue !== undefined) {
+
+        for (var i = 0; i <= req.query.featureName.length; i++) {
+            features.push({featureName: req.query.featureName[i], featureValue: req.query.featureValue[i]})
+        }
+
+        query = query.find({features: {$elemMatch: {$or: features}}});
+
+    }
+
+    query.exec(function(err, data){
+        if(err) {
+            res.status(500).send('Error al realizar la busqueda');
+        } else {
+            console.log(data);
+            res.json(data);
+        }
+    });
+});
+
+
+app.post('/product',function (req, res) {
+    
+    var product = new Product(req.body)
+    product.save(function(err, data) {
+        if (err){
+            res.status(500).send('Error al crear un nuevo post');
+            return console.error(err);
+        }else{
+            console.log(data);
+            res.json(data);
+        }
+    });
+     
+})
+
+
+app.put('/product/:id', function(req, res){
+    let productId =req.params.id;
+    let update = req.body;
+
+    Product.findByIdAndUpdate(productId, update,(err, productUpdate)=>{
+        if(err) res.status(500).send('Error al actualizar el post');
+        res.status(200).send({product: productUpdate});
+    })
+
+});
+
+
+app.delete('/product/:id', function(req, res){
+    Product.findByIdAndRemove({
+        _id: req.params.id
+    },function(err, data){
+        if(err) {
+            res.status(500).send('Error al eliminar un post');
+        } else {
+            console.log(data);
+            res.send(data);
+        }
+    });
+});
+
+
+
+
+app.listen(3002, function () {
+  console.log('Servidor conectado en el puerto 3002!');
 });
