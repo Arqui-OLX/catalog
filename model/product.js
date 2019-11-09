@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 
 const productSchema = new Schema({
 
+    _id: String,
     category: String,
     subcategory:String, 
     created_at : { 
@@ -17,7 +18,8 @@ const productSchema = new Schema({
     features: [{
         featureName: String,
         featureValue: String
-    }] 
+    }],
+    _id: false
 });
 
 productSchema.index({ title: 'text', description: 'text' });
