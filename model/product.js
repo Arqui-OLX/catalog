@@ -18,8 +18,7 @@ const productSchema = new Schema({
     features: [{
         featureName: String,
         featureValue: String
-    }],
-    first_image: String
+    }]
 });
 
 productSchema.index({ title: 'text', description: 'text' });
