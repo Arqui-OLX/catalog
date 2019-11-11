@@ -79,20 +79,14 @@ app.get('/product', function(req, res){
 
     }
 
-    function printStudents(pageNumber, nPerPage) {
-        print( "Page: " + pageNumber );
-        db.students.find()
-            .skip( pageNumber > 0 ? ( ( pageNumber - 1 ) * nPerPage ) : 0 )
-            .limit( nPerPage )
-            .forEach( student => {
-                print( student.name );
-            } );
+    if (req.query.pageNumber !== undefined  && req.query.nPerPage !== undefined) {
+        query = query
+        .skip( pageNumber > 0 ? ( ( pageNumber - 1 ) * nPerPage ) : 0 )
+        .limit( nPerPage );
     }
 
-    query
-    .skip( pageNumber > 0 ? ( ( pageNumber - 1 ) * nPerPage ) : 0 )
-    .limit( nPerPage )
-    .exec(function(err, data){
+
+    query.exec(function(err, data){
         if(err) {
             res.status(500).send('Error al realizar la busqueda');
         } else {
