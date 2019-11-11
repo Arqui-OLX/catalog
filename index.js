@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const parser = require("body-parser");
 const cors = require('cors');
 const Product = require("./model/product");
-
+const port = 3002;
 
 
 
@@ -17,12 +17,12 @@ mongoose.connect(mongoDB, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true 
- })
+})
 .then(db => console.log('db connected'))
-  .catch(err => console.log(err));
+.catch(err => console.log(err));
 
 
- 
+
 app.use(parser.urlencoded({extended: false}));
 app.use(parser.json());
 app.use(cors());
@@ -53,6 +53,8 @@ app.get('/product', function(req, res){
 
     let query = Product.find({});
     let features = [];
+    let pageNumber = parseInt(req.query.pageNumber);
+    let nPerPage = parseInt(req.query.nPerPage);
 
     if (req.query.search  !== undefined) {
         query = query.find({ $text: { $search: '\"'+req.query.search+'\"' } });
@@ -77,7 +79,20 @@ app.get('/product', function(req, res){
 
     }
 
-    query.exec(function(err, data){
+    function printStudents(pageNumber, nPerPage) {
+        print( "Page: " + pageNumber );
+        db.students.find()
+            .skip( pageNumber > 0 ? ( ( pageNumber - 1 ) * nPerPage ) : 0 )
+            .limit( nPerPage )
+            .forEach( student => {
+                print( student.name );
+            } );
+    }
+
+    query
+    .skip( pageNumber > 0 ? ( ( pageNumber - 1 ) * nPerPage ) : 0 )
+    .limit( nPerPage )
+    .exec(function(err, data){
         if(err) {
             res.status(500).send('Error al realizar la busqueda');
         } else {
@@ -100,7 +115,7 @@ app.post('/product',function (req, res) {
             res.json(data);
         }
     });
-     
+
 })
 
 
@@ -132,6 +147,6 @@ app.delete('/product/:id', function(req, res){
 
 
 
-app.listen(3002, function () {
-  console.log('Servidor conectado en el puerto 3002!');
+app.listen(port, function () {
+    console.log(`Servidor conectado en el puerto ${port}!`);
 });
