@@ -56,6 +56,10 @@ app.get('/product', function(req, res){
     let pageNumber = parseInt(req.query.pageNumber);
     let nPerPage = parseInt(req.query.nPerPage);
 
+    if (req.query.profile  !== undefined) {
+        query = query.find({ fk_profile: req.query.profile });
+    }
+
     if (req.query.search  !== undefined) {
         query = query.find({ $text: { $search: '\"'+req.query.search+'\"' } });
     }

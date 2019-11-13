@@ -18,7 +18,8 @@ const productSchema = new Schema({
     features: [{
         featureName: String,
         featureValue: String
-    }]
+    }],
+    fk_profile: Number
 });
 
 productSchema.index({ title: 'text', description: 'text' });
