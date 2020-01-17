@@ -1,22 +1,19 @@
 version: "2"
 services:
-  catalog-ms:
+  post-db:
+    image: mongo
+    ports:
+      - "3306:27017"
+    labels:
+      io.rancher.scheduler.affinity:host_label: id=n1
+  post-ms:
     build: .
     ports:
-      - "3002:3002"
+      - "3002:3000"
     depends_on:
-      - catalog-db
+      - post-db
     labels:
       io.rancher.scheduler.affinity:host_label: id=n1
-  catalog-db:
-    image: mongo
-    volumes:
-      - /data/mongodb/db:/data/db
-    ports:
-      - "3303:3307"
-    labels:
-      io.rancher.scheduler.affinity:host_label: id=n1
-
 
 
 

@@ -6,7 +6,11 @@ const productSchema = new Schema({
 
     _id: String,
     category: String,
-    subcategory:String, 
+    subcategory:String,
+    department: String,
+    city: String,
+    lat: Number,
+    lng: Number,
     created_at : { 
         type : Date, 
         default: Date.now

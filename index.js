@@ -5,13 +5,13 @@ const mongoose = require('mongoose');
 const parser = require("body-parser");
 const cors = require('cors');
 const Product = require("./model/product");
-const port = 3002;
+const port = 3000;
 
 
 
 //creación y conexion de la base de datos
 //mongoose.connect('mongodb://catalog-db/catalog-database')
-const mongoDB = 'mongodb://localhost:27017/catalogDB';
+const mongoDB = 'mongodb://post-db/post';
 
 mongoose.connect(mongoDB, {
     useCreateIndex: true,
@@ -33,26 +33,43 @@ app.get('/product/:id',function(req, res){
     
     const id = req.params.id;
 
-
     Product.findById(id).exec(function(err, data){
         if(err) {
             res.status(500).send('Error al encontrar post');
         } else {
-            console.log(data.created_at.toLocaleString());
             res.json(data);
         }
     });
+
 });
 
+
+app.get('/allProduct', async function(req, res){
+
+    
+    let posts = [];
+    
+
+    for (let i = 0; i < req.query.posts.length; i++) {
+        
+        const post = await Product.findById(req.query.posts[i]);
+        posts.push(await post);
+
+
+    }
+
+    res.status(200).json(posts);
+
+});
 
 app.get('/product', function(req, res){
 
     // GET localhost:3000/product?search=coffee shopping&priceFilter[]=200&priceFilter[]=10000000&subcategory=M
     //     &featureName=x&featureValue=y
-    
 
     let query = Product.find({});
     let features = [];
+    let subcategory = [];
     let pageNumber = parseInt(req.query.pageNumber);
     let nPerPage = parseInt(req.query.nPerPage);
 
@@ -69,13 +86,18 @@ app.get('/product', function(req, res){
     }
 
     if (req.query.subcategory !== undefined) {
-        query = query.find({ subcategory: req.query.subcategory })
+
+        for (var i = 0; i < req.query.subcategory.length; i++) {
+            subcategory.push(req.query.subcategory[i]);
+        }
+        query = query.find({subcategory: { $in: subcategory } });
+
     }
 
 
     if (req.query.featureName !== undefined  && req.query.featureValue !== undefined) {
 
-        for (var i = 0; i <= req.query.featureName.length; i++) {
+        for (var i = 0; i < req.query.featureName.length; i++) {
             features.push({featureName: req.query.featureName[i], featureValue: req.query.featureValue[i]})
         }
 
@@ -90,7 +112,7 @@ app.get('/product', function(req, res){
     }
 
 
-    query.exec(function(err, data){
+    query.sort( {created_at: -1} ).exec(function(err, data){
         if(err) {
             res.status(500).send('Error al realizar la busqueda');
         } else {
