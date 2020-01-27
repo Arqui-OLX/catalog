@@ -11,7 +11,7 @@ const port = 3000;
 
 //creación y conexion de la base de datos
 //mongoose.connect('mongodb://catalog-db/catalog-database')
-const mongoDB = 'mongodb://post-db/post';
+const mongoDB = 'mongodb://35.206.95.187:3306/post';
 
 mongoose.connect(mongoDB, {
     useCreateIndex: true,
